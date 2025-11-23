@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>草莓成熟度检测</title>
+  <meta charset="UTF-8">
+  <!-- import CSS -->
+  <link rel="stylesheet" href="http://127.0.0.1:5003/front/index.css">
+</head>
+<body>
+  <div id="app" class="w">
+    <el-container class="home-container">
+        <!-- 头部区域 -->
+        <el-header>
+          <div>
+              <span>草莓成熟度检测</span>
+          </div>
+        </el-header>
+
+        <el-container>
+          <el-aside width="180px">
+              <div>
+                <el-row class="aside-row">
+                  <el-upload
+                  :action="uploadUrl"
+                  :show-file-list="false"
+                  :on-success="handleSuccess">
+                    <el-button type="primary" plain>选取图片</el-button>
+                  </el-upload>
+                </el-row>
+                <el-row class="aside-row">
+                    <el-button type="primary" plain @click="predict">开始预测</el-button>
+                </el-row>
+                <el-row class="aside-row">
+                    <el-button type="primary" plain @click="reloadPage">刷新页面</el-button>
+                </el-row>
+              </div>
+              
+          </el-aside>
+          <el-main>
+            <div class="mainc-content">
+              <div>
+                <el-row class="picture-region">
+                  <img :src='showPicPath'>
+                </el-row>
+              </div>
+              
+            </div>
+          </el-main>
+        </el-container>
+    </el-container>
+    
+  </div>
+</body>
+  <!-- import Vue before Element -->
+  <script src="http://127.0.0.1:5003/front/vue.js"></script>
+  <!-- import JavaScript -->
+  <script src="http://127.0.0.1:5003/front/index.js"></script>
+  <!-- import axios -->
+  <script src="http://127.0.0.1:5003/front/axios.min.js"></script>
+  <script>
+    new Vue({
+      el: '#app',
+      data() {
+          return {
+            uploadUrl: 'http://127.0.0.1:5003/upload',
+            showPicPath: 'http://127.0.0.1:5003/show/pre_show.png',
+          }
+      },
+      methods: {
+        // 监听数据上传成功的事件
+        handleSuccess(response) {
+            this.showPicPath = 'http://127.0.0.1:5003/show/show.jpg'
+        },
+        predict() {
+          const that = this
+          axios.post('http://127.0.0.1:5003/predict').then
+            (function(response) {
+              that.showPicPath = 'http://127.0.0.1:5003/show/result.jpg'
+            }, function(err){})
+        },
+        reloadPage() {
+          window.location.reload()
+        }
+      }
+    })
+  </script>
+
+<style>
+/* 版心 */
+.w {
+    width: 630px;
+    margin: 30px auto;
+}
+.home-container {
+  height: 100%;
+  border: 1px solid grey;
+}
+
+.el-header {
+  background-color: #f8f9fa;
+  display: flex;
+  justify-content: space-between; /*左右两边不留白 */
+  align-items: center; /*上下留白，即垂直居中 */
+  color: rgb(0, 0, 0);
+  font-size: 20px;
+}
+.el-header div {
+  margin-left: 15px;
+  align-items: center;
+}
+.el-aside {
+  background-color: #f8f9fa;
+  border-bottom-left-radius: 20px;
+  border-top-right-radius: 20px;
+}
+.aside-row {
+  margin: 100px 50px;
+}
+.mainc-content {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  align-items: center;
+  width: 400px;
+  height: 400px;
+  background-color: rgba(255, 255, 255, 0.877);
+  /* border: 1px dashed grey; */
+}
+.picture-region {
+  width: 400px;
+  height: 400px;
+  border: 1px dashed grey;
+}
+.picture-region img {
+  width: 100%;
+  height: 100%;
+}
+.result-region {
+  margin-top: 30px;
+  padding-left: 40px;
+  border: 1px dashed grey;
+}
+
+
+</style>
+
+</html>
